@@ -22,7 +22,7 @@ Before you get started you'll need to have these things:
 
 ## The App
 
-This repo contains a simple python [Flask](http://flask.pocoo.org/) and you can find the complete [source code for this project here](https://github.com/ariv3ra/cicd-101-workshop) and you can `git clone` it locally. The app is a simple webserver that renders html when a request is made to it. The flask application lives in the `hello_world.py` file:
+This repo contains a simple Python [Flask](http://flask.pocoo.org/) and you can find the complete [source code for this project here](https://github.com/ariv3ra/cicd-101-workshop) and you can `git clone` it locally. The app is a simple web server that renders html when a request is made to it. The flask application lives in the `hello_world.py` file:
 
 ```python
 from flask import Flask
@@ -33,12 +33,10 @@ def wrap_html(message):
     html = """
         <html>
         <body>
-            <div style='font-size:80px;'>
-            <center>
+            <div style='text-align:center;font-size:80px;'>
                 <image height="340" width="1200" src="https://user-images.githubusercontent.com/194400/41597205-a57442ea-73c4-11e8-9591-61f5c83c7e66.png">
                 <br>
                 {0}<br>
-            </center>
             </div>
         </body>
         </html>""".format(message)
@@ -54,11 +52,11 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 ```
 
-The key take away in this code the `message` variable within the `hello_world()` function.  This variable specifies a string value and the value of this variable will be tested for a match in a unittest.
+The key take away in this code is the `message` variable within the `hello_world()` function.  This variable specifies a string value and the value of this variable will be tested for a match in a unittest.
 
 ## Testing Code
 
-All code must be tested to ensure that quality stable code is being released to the public.  Python comes with a testing framework named [unittest](https://docs.python.org/2/library/unittest.html) which is used in this example.  The flask application has a companion unittest that will test the application and ensure it's functioning as designed. The file `test_hello_world.py` is the unittest for our hello_world.py app below is a quick explanation the code.
+All code must be tested to ensure that quality stable code is being released to the public.  Python comes with a testing framework named [unittest](https://docs.python.org/2/library/unittest.html) which is used in this example.  The Flask application has a companion unittest that will test the application and ensure it's functioning as designed. The file `test_hello_world.py` is the unittest for our hello_world.py app below is a quick explanation the code.
 
 ```python
 import hello_world
@@ -108,7 +106,7 @@ def test_status_code(self):
     self.assertEqual(response.status_code, 200)
 ```
 
-`test_status_code()` is a method and it specifies an actual test case in code.  This test case makes a `get` request to the flask application and captures the app's response in the `response` variable. The `self.assertEqual(response.status_code, 200)` compares the value of the `response.status_code` result to the expected value of `200` which signifies the `get` request was successful. If the server responds with a status_code other that 200 the test will fail.
+`test_status_code()` is a method and it specifies an actual test case in code.  This test case makes a `get` request to the Flask application and captures the app's response in the `response` variable. The `self.assertEqual(response.status_code, 200)` compares the value of the `response.status_code` result to the expected value of `200` which signifies the `get` request was successful. If the server responds with a status_code other that 200 the test will fail.
 
 ```python
 def test_message(self):
@@ -134,13 +132,13 @@ CircleCI integration is completed in basically two steps.
 1. Set up project access in CircleCI dashboard
 2. Define your CI/CD Builds a `config.yml` file
 
-Once project's are setup in the CircleCI platform any commits pushed upstream tot he codebase will be detected and CircleCI will execute the job defined in your `config.yml` file which is discussed in the next section.
+Once projects are setup in the CircleCI platform any commits pushed upstream to the codebase will be detected and CircleCI will execute the job defined in your `config.yml` file which is discussed in the next section.
 
 Before continuing ensure the [Prerequisites](#Prerequisites) section is completed. 
 
-### config.yml File
+### .circleci/config.yml
 
-The config.yml is where all of the CI/CD magic happens. Below is an example of the config.yml used in this tutorial with a brief explanation of the syntax:
+config.yml is where all of the CI/CD magic happens. Below is an example of the config.yml used in this tutorial with a brief explanation of the syntax:
 
 ```yaml
 version: 2
@@ -186,13 +184,13 @@ The `build:` key is composed of a few elements:
 
 The `docker:` key tells CircleCI to use a [docker executor](https://circleci.com/docs/2.0/configuration-reference/#docker) which means our build will be executed using docker containers.
 
-`image: circleci/python:2.7.14` specifies the docker image that the build must use
+`image: circleci/python:2.7.14` specifies the Docker image that the build must use
 
 ### steps: 
 
-The `steps:` key is a collection that specifies all of the commands that will be executed in this build. The first action that happens the `- checkout` command that basically performs a git clone of your code into the build environment.
+The `steps:` key is a collection that specifies all of the actions that will be executed in this job. The first action that happens is the `- checkout` command that basically performs a `git clone` of your code into the build environment.
 
-The `- run:` keys specify commands to execute within the build.  Run keys have a `name:` parameter where you can label a grouping of commands. For example `name: Run Tests` groups the test related actions which helps organize and display build data within the CircleCI dashboard.
+The `- run:` keys specify commands to execute within the job.  Run keys have a `name:` parameter where you can label a grouping of commands. For example `name: Run Tests` groups the test related actions which helps organize and display build data within the CircleCI dashboard.
 
 **Important NOTE:** Each `run` block is equivalent to separate/individual shells or terminals so commands that are configured or executed will not persist in latter run blocks. Use the `$BASH_ENV` work around in the [Tips & Tricks section](https://circleci.com/docs/2.0/migration/#tips-for-setting-up-circleci-20)
 
@@ -207,7 +205,7 @@ The `- run:` keys specify commands to execute within the build.  Run keys have a
       pip install --no-cache-dir -r requirements.txt
 ```
 
-The `command:` key for this run block has a list of commands to execute. These commands set the `$TAG` & `IMAGE_NAME` custom environment variables that will be used throughout this build. The remaining commands set up the [python virtualenv](https://virtualenv.pypa.io/en/stable/) & installs the python dependencies specified in the `requirements.txt` file.
+The `command:` key for this run block has a list of commands to execute. These commands set the `$TAG` & `IMAGE_NAME` custom environment variables that will be used throughout this build. The remaining commands set up the [python virtualenv](https://virtualenv.pypa.io/en/stable/) & installs the Python dependencies specified in the `requirements.txt` file.
 
 ```yaml
 - run:
@@ -269,7 +267,7 @@ The application, unit tests and config.yml have been explained in detail and pro
 
 ### Add Project to CircleCI
 
-In order for the CircleCI platform to integrate with projects it must have access to your codebase. In this section demonstrate how to give CircleCI access to a project on Github via the CircleCi dashboard.
+In order for the CircleCI platform to integrate with projects it must have access to your codebase. In this section we demonstrate how to give CircleCI access to a project on GitHub via the CircleCI dashboard.
 
 - Login to the [dashboard](http://circleci.com/vcs-authorize/)
 - Click the **Add Project** icon on the left menu
@@ -336,12 +334,10 @@ The Green build means that a new Docker image was created and pushed to the user
 
 ![Docker Hub Build](images/docker_hub.png)
 
-## Continuos Delivery/Deployment
+## Continuous Delivery/Deployment
 
-Using the automation offered by CircleCI this project pushed the Docker image to the user's Docker Hub. The final requirement for this pipeline is to push a stable version of the application to Docker Hub which constitutes Continuous Deployment. If there would've been a manual action or user intervention required in this pipeline then it would be considered Continuos **Delivery** which is appropriate in situations where a review or an approval is required prior to actually deploying applications.
+Using the automation offered by CircleCI this project pushed the Docker image to the user's Docker Hub. The final requirement for this pipeline is to push a stable version of the application to Docker Hub which constitutes Continuous Deployment. If there would've been a manual action or user intervention required in this pipeline then it would be considered Continuous **Delivery** which is appropriate in situations where a review or an approval is required prior to actually deploying applications.
 
 ## Summary
 
 In review this tutorial guides you in implementing a CI/CD pipeline into a codebase. Though this example is built using python technologies the general build, test and deployment concepts can easily be implemented in whatever language or framework you desire. The examples in this tutorial are simple but you can expand on them and tailor them to your pipelines. CircleCI has great [documentation](https://circleci.com/docs/2.0/) so don't hesitate to research the docs site and if you really get stuck you can also reach out to the CircleCI community via the [https://discuss.circleci.com/](https://discuss.circleci.com/) community/forum site.
-
-
